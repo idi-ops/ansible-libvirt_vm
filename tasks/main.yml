@@ -1,0 +1,6 @@
+---
+
+- { include: launch.yml, tags: ["launch"] }
+- { include: terminate.yml, tags: ["terminate"] }
+- { include: start.yml, tags: ["start"] }
+- { include: stop.yml, tags: ["stop"] }

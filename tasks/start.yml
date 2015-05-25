@@ -1,0 +1,6 @@
+---
+
+- name: Start virtual machine
+  command: "/usr/bin/virsh start {{ vm_hostname }}.{{ vm_domain }}"
+  delegate_to: "{{ vm_hypervisor }}"
+  sudo: yes

@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  author: Giovanni Tirloni
+  description: Deploys new libvirt/KVM virtual machines
+  company: Inclusive Design Research Centre
+  license: MIT
+  min_ansible_version: 1.9
+  platforms:
+  - name: EL
+    versions:
+    - 7
+dependencies: []

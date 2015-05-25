@@ -1,0 +1,9 @@
+---
+
+libvirt_vm_wait_online: yes
+libvirt_vm_bridge: "virbr0"
+libvirt_vm_images_path: "/var/lib/libvirt/images"
+libvirt_vm_root_password: "disabled"
+libvirt_vm_virtbuilder_source: "/var/lib/libvirt/templates/index.asc"
+libvirt_vm_virtbuilder_fingerprint: "unused"
+libvirt_vm_virtbuilder_additional_opts: "--no-check-signature"

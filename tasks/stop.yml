@@ -1,0 +1,6 @@
+---
+
+- name: Stop virtual machine
+  command: "/usr/bin/virsh destroy {{ vm_hostname }}.{{ vm_domain }}"
+  delegate_to: "{{ vm_hypervisor }}"
+  sudo: yes
