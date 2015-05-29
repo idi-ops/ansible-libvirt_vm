@@ -31,7 +31,7 @@ The role requires you to provide the following variables:
     libvirt_vm_osvariant   # `virt-install --os-variant list`
     libvirt_vm_hypervisor  # hostname of the libvirt/KVM hypervisor host (as specified in the Ansible inventory)
 
-Additionally, the following default settings are defined:
+Additionally, the following default settings are defined (and can be overridden):
 
     # wait_for machine to be acessible on port 22, from the hypervisor's perspective
     libvirt_vm_wait_online: yes

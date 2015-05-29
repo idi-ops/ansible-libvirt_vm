@@ -1,22 +1,33 @@
 ---
 
+- name: Verify if virtual machine already exists
+  command: "/usr/bin/virsh dominfo {{ libvirt_vm_hostname }}.{{ libvirt_vm_domain }}"
+  register: virsh_dominfo
+  changed_when: false
+  failed_when: false
+  delegate_to: "{{ libvirt_vm_hypervisor }}"
+  sudo: yes
+
 - name: Stop virtual machine
   command: "/usr/bin/virsh destroy {{ vm_hostname }}.{{ vm_domain }}"
   delegate_to: "{{ vm_hypervisor }}"
   sudo: yes
   ignore_errors: yes
+  when: virsh_dominfo.rc == 0
 
-- name: Deallocate IP address
-  command: "/usr/bin/virsh net-update --config --live default delete ip-dhcp-host \"<host mac='{{ libvirt_vm_mac_addr }}' name='{{ libvirt_vm_hostname }}.{{ libvirt_vm_domain }}' ip='{{ libvirt_vm_ip_addr }}'/>\""
-  delegate_to: "{{ vm_hypervisor }}"
-  sudo: yes
-  ignore_errors: yes
+#- name: Deallocate IP address
+#  command: "/usr/bin/virsh net-update --config --live {{ libvirt_vm_network }} delete ip-dhcp-host \"<host mac='{{ libvirt_vm_mac_addr }}' name='{{ libvirt_vm_hostname }}.{{ libvirt_vm_domain }}' ip='{{ libvirt_vm_ip_addr }}'/>\""
+#  delegate_to: "{{ vm_hypervisor }}"
+#  sudo: yes
+#  ignore_errors: yes
+#  when: virsh_dominfo.rc == 0
 
 - name: Undefine virtual machine
   command: "/usr/bin/virsh undefine {{ libvirt_vm_hostname }}.{{ libvirt_vm_domain }}"
   delegate_to: "{{ vm_hypervisor }}"
   sudo: yes
   ignore_errors: yes
+  when: virsh_dominfo.rc == 0
 
 - name: Remove virtual disk
   file:
@@ -25,3 +36,4 @@
   delegate_to: "{{ vm_hypervisor }}"
   sudo: yes
   ignore_errors: yes
+  when: virsh_dominfo.rc == 0

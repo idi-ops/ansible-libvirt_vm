@@ -1,6 +1,8 @@
 ---
 
 libvirt_vm_wait_online: yes
+libvirt_vm_autostart: yes
+libvirt_vm_network: "default"
 libvirt_vm_bridge: "virbr0"
 libvirt_vm_images_path: "/var/lib/libvirt/images"
 libvirt_vm_root_password: "disabled"
