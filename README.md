@@ -11,9 +11,7 @@ This role is very opinionated and expects:
  * libvirt/KVM hypervisor server
  * local virt-builder template repository
  * virt-builder template image (correctly processed by virt-sysprep before usage)
- * libvirt network with static addresses (DHCP)
-
-It has been tested with 'nat' and 'routed' libvirt network types.
+ * libvirt network in bridge mode (VMs get static IP addresses)
 
 Role Variables
 --------------
@@ -24,6 +22,8 @@ The role requires you to provide the following variables:
     libvirt_vm_hostname
     libvirt_vm_domain
     libvirt_vm_ip_addr
+    libvirt_vm_netmask
+    libvirt_vm_gateway
     libvirt_vm_mac_addr
     libvirt_vm_cpu         # number of virtual CPUs
     libvirt_vm_mem         # specify size in megabytes
