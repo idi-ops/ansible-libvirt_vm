@@ -1,10 +1,10 @@
 ---
 galaxy_info:
-  author: Giovanni Tirloni
+  author: OCAD University
   description: Deploys new libvirt/KVM virtual machines
-  company: Inclusive Design Research Centre
+  company: OCAD University
   license: MIT
-  min_ansible_version: 1.9
+  min_ansible_version: 2.0
   platforms:
   - name: EL
     versions:

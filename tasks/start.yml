@@ -3,4 +3,4 @@
 - name: Start virtual machine
   command: "/usr/bin/virsh start {{ libvirt_vm_hostname }}"
   delegate_to: "{{ libvirt_vm_hypervisor }}"
-  sudo: yes
+  become: yes

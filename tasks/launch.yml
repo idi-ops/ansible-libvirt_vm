@@ -1,36 +1,39 @@
 ---
 
+- debug:
+    var: libvirt_vm_data_disk
+
 - name: Verify if virtual machine already exists
-  command: "/usr/bin/virsh dominfo {{ libvirt_vm_hostname }}"
+  command: "/usr/bin/virsh dominfo {{ inventory_hostname }}"
   register: virsh_dominfo
   changed_when: false
   failed_when: false
   delegate_to: "{{ libvirt_vm_hypervisor }}"
-  sudo: yes
+  become: yes
 
 #- name: Allocate IP address for new virtual machine in DHCP server
-#  command: "/usr/bin/virsh net-update --config --live {{ libvirt_vm_network }} add ip-dhcp-host \"<host mac='{{ libvirt_vm_mac_addr }}' name='{{ libvirt_vm_hostname }} ip='{{ libvirt_vm_ip_addr }}'/>\""
+#  command: "/usr/bin/virsh net-update --config --live {{ libvirt_vm_network }} add ip-dhcp-host \"<host mac='{{ libvirt_vm_mac_addr }}' name='{{ inventory_hostname }} ip='{{ libvirt_vm_ip_addr }}'/>\""
 #  delegate_to: "{{ libvirt_vm_hypervisor }}"
-#  sudo: yes
+#  become: yes
 #  when: virsh_dominfo.rc != 0
 
 - name: Copy network configuration file
   template:
     src: ifcfg.j2
-    dest: "/tmp/libvirt_vm_ifcfg-{{ libvirt_vm_hostname }}"
+    dest: "/tmp/libvirt_vm_ifcfg-{{ inventory_hostname }}"
   delegate_to: "{{ libvirt_vm_hypervisor }}"
   when: virsh_dominfo.rc != 0
 
-- name: Build virtual disk
-  command: "/usr/bin/virt-builder {{ libvirt_vm_template }} --hostname {{ libvirt_vm_hostname }}.{{ libvirt_vm_domain }} --format qcow2 --size {{ libvirt_vm_disk }} -o {{ libvirt_vm_images_path }}/{{ libvirt_vm_hostname }}.qcow2 --root-password {{ libvirt_vm_root_password }} --source {{ libvirt_vm_virtbuilder_source }} --fingerprint '{{ libvirt_vm_virtbuilder_fingerprint }}' --upload /tmp/libvirt_vm_ifcfg-{{ libvirt_vm_hostname }}:/etc/sysconfig/network-scripts/ifcfg-eth0 {{ libvirt_vm_virtbuilder_additional_opts }}"
+- name: Build main disk
+  command: "/usr/bin/virt-builder {{ libvirt_vm_template }} --hostname {{ inventory_hostname }} --format qcow2 --size {{ libvirt_vm_disk }} -o {{ libvirt_vm_images_path }}/{{ inventory_hostname }}.qcow2 --root-password {{ libvirt_vm_root_password }} --source {{ libvirt_vm_virtbuilder_source }} --fingerprint '{{ libvirt_vm_virtbuilder_fingerprint }}' --upload /tmp/libvirt_vm_ifcfg-{{ inventory_hostname }}:/etc/sysconfig/network-scripts/ifcfg-eth0 {{ libvirt_vm_virtbuilder_additional_opts }}"
   delegate_to: "{{ libvirt_vm_hypervisor }}"
-  sudo: true
+  become: yes 
   when: virsh_dominfo.rc != 0
 
 - name: Launch virtual machine
-  command: "/usr/bin/virt-install --import --name {{ libvirt_vm_hostname }} --ram {{ libvirt_vm_mem }} --vcpus {{ libvirt_vm_cpu }} --disk {{ libvirt_vm_images_path }}/{{ libvirt_vm_hostname }}.qcow2 --network bridge={{ libvirt_vm_bridge }},model=virtio --mac {{ libvirt_vm_mac_addr }} --os-variant={{ libvirt_vm_osvariant }} --nographics --noautoconsole --channel unix,path=/var/lib/libvirt/qemu/guest.agent,mode=bind,target_type=virtio,name=org.qemu.guest_agent.0 {% if libvirt_vm_autostart %}--autostart{% endif %}"
+  command: "/usr/bin/virt-install --import --name {{ inventory_hostname }} --ram {{ libvirt_vm_mem }} --vcpus {{ libvirt_vm_cpu }} --disk {{ libvirt_vm_images_path }}/{{ inventory_hostname }}.qcow2 --network bridge={{ libvirt_vm_bridge }},model=virtio --mac {{ libvirt_vm_mac_addr }} --os-variant={{ libvirt_vm_osvariant }} --nographics --noautoconsole --channel unix,path=/var/lib/libvirt/qemu/guest.agent,mode=bind,target_type=virtio,name=org.qemu.guest_agent.0 {% if libvirt_vm_autostart %}--autostart{% endif %} {% if libvirt_vm_data_disk is defined %}--disk {{ libvirt_vm_images_path }}/{{ inventory_hostname }}-data.qcow2,format=qcow2,size={{ libvirt_vm_data_disk }}{% endif %}"
   delegate_to: "{{ libvirt_vm_hypervisor }}"
-  sudo: true
+  become: yes
   when: virsh_dominfo.rc != 0
 
 - name: Wait for VM to become acessible

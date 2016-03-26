@@ -6,26 +6,26 @@
   changed_when: false
   failed_when: false
   delegate_to: "{{ libvirt_vm_hypervisor }}"
-  sudo: yes
+  become: yes
 
 - name: Stop virtual machine
   command: "/usr/bin/virsh destroy {{ libvirt_vm_hostname }}"
-  delegate_to: "{{ vm_hypervisor }}"
-  sudo: yes
+  delegate_to: "{{ libvirt_vm_hypervisor }}"
+  become: yes
   ignore_errors: yes
   when: virsh_dominfo.rc == 0
 
 #- name: Deallocate IP address
 #  command: "/usr/bin/virsh net-update --config --live {{ libvirt_vm_network }} delete ip-dhcp-host \"<host mac='{{ libvirt_vm_mac_addr }}' name='{{ libvirt_vm_hostname }} ip='{{ libvirt_vm_ip_addr }}'/>\""
 #  delegate_to: "{{ vm_hypervisor }}"
-#  sudo: yes
+#  become: yes
 #  ignore_errors: yes
 #  when: virsh_dominfo.rc == 0
 
 - name: Undefine virtual machine
   command: "/usr/bin/virsh undefine {{ libvirt_vm_hostname }}"
-  delegate_to: "{{ vm_hypervisor }}"
-  sudo: yes
+  delegate_to: "{{ libvirt_vm_hypervisor }}"
+  become: yes
   ignore_errors: yes
   when: virsh_dominfo.rc == 0
 
@@ -33,7 +33,7 @@
   file:
     path: "{{ libvirt_vm_images_path }}/{{ libvirt_vm_hostname }}.qcow2"
     state: absent
-  delegate_to: "{{ vm_hypervisor }}"
-  sudo: yes
+  delegate_to: "{{ libvirt_vm_hypervisor }}"
+  become: yes
   ignore_errors: yes
   when: virsh_dominfo.rc == 0

@@ -19,8 +19,8 @@ Role Variables
 The role requires you to provide the following variables:
 
     libvirt_vm_template    # template ID from a local virt-builder repository
-    libvirt_vm_hostname
-    libvirt_vm_domain
+#    libvirt_vm_hostname (DEPRECATED)
+#    libvirt_vm_domain (DEPRECATED)
     libvirt_vm_ip_addr
     libvirt_vm_netmask
     libvirt_vm_gateway
@@ -68,7 +68,7 @@ Example Playbook
     - name: Deploy a libvirt/KVM virtual machine
       hosts: localhost
       gather_facts: no
-      sudo: no
+      become: no
     
       roles:
     
@@ -87,13 +87,3 @@ Example Playbook
 You need to pass a tag to `ansible-playbook` for the operation to be executed (launch, terminate, start, stop):
 
     $ ansible-playbook -i inventory -t launch site.yml
-
-License
--------
-
-MIT
-
-Author Information
-------------------
-
-Created by [Giovanni Tirloni](http://gtirloni.com)
