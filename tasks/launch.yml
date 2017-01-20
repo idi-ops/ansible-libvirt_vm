@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    var: libvirt_vm_data_disk
-
 - name: Verify if virtual machine already exists
   command: "/usr/bin/virsh dominfo {{ inventory_hostname }}"
   register: virsh_dominfo
