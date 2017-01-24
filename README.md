@@ -19,8 +19,6 @@ Role Variables
 The role requires you to provide the following variables:
 
     libvirt_vm_template    # template ID from a local virt-builder repository
-#    libvirt_vm_hostname (DEPRECATED)
-#    libvirt_vm_domain (DEPRECATED)
     libvirt_vm_ip_addr
     libvirt_vm_netmask
     libvirt_vm_gateway
@@ -30,6 +28,8 @@ The role requires you to provide the following variables:
     libvirt_vm_disk        # specify size and unit (eg. '20G', '1T', etc)
     libvirt_vm_osvariant   # `virt-install --os-variant list`
     libvirt_vm_hypervisor  # hostname of the libvirt/KVM hypervisor host (as specified in the Ansible inventory)
+    libvirt_vm_hostname (DEPRECATED)
+    libvirt_vm_domain (DEPRECATED)
 
 Additionally, the following default settings are defined (and can be overridden):
 
@@ -69,9 +69,9 @@ Example Playbook
       hosts: localhost
       gather_facts: no
       become: no
-    
+
       roles:
-    
+
         - role: libvirt_vm
           libvirt_vm_template:   "centos-7.1"
           libvirt_vm_hostname:   "webserver"
